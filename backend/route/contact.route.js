@@ -1,4 +1,6 @@
 const express = require("express");
+const router = express.Router();
+
 const {
   addContact,
   getContacts,
@@ -6,11 +8,18 @@ const {
   deleteContact,
 } = require("../controller/contact.controller");
 
-const router = express.Router();
+const upload = require("../middleware/upload");
 
-router.post("/addcontact", addContact);
+// ✅ CREATE (FIXED ROUTE NAME + multer)
+router.post("/add", upload.single("image"), addContact);
+
+// ✅ READ
 router.get("/contactlists", getContacts);
-router.put("/update/:id", updateContact);
+
+// ✅ UPDATE
+router.put("/update/:id", upload.single("image"), updateContact);
+
+// ✅ DELETE
 router.delete("/delete/:id", deleteContact);
 
 module.exports = router;

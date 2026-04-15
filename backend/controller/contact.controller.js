@@ -11,8 +11,13 @@ const addContact = async (req, res) => {
         Message: "All fields required",
       });
     }
-
-    const newContact = await Contact.create(req.body);
+const newContact = await Contact.create({
+  FirstName,
+  LastName,
+  Relation,
+  PhoneNum,
+  Image: req.file ? req.file.filename : null, 
+});
 
     res.status(201).json({
       Success: true,
@@ -43,10 +48,20 @@ const updateContact = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const updated = await Contact.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+  const updateData = {
+  FirstName: req.body.FirstName,
+  LastName: req.body.LastName,
+  Relation: req.body.Relation,
+  PhoneNum: req.body.PhoneNum,
+};
 
+if (req.file) {
+  updateData.Image = req.file.filename; 
+}
+
+const updated = await Contact.findByIdAndUpdate(id, updateData, {
+  new: true,
+});
     res.status(200).json({
       Success: true,
       data: updated,
